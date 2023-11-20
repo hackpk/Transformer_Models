@@ -9,7 +9,7 @@ class InputEmbedding():
         super.__init__()
         self.d_model = d_model
         self.vocab_size = vocab_size
-        self.embeddings = nn.Embedding(vocab_size,d_model)
+        self.embeddind = nn.Embedding(vocab_size,d_model)
     
     def __call__(self, x):
-        return nn.Embedding(x) * math.sqrt(self.d_model)
+        return self.embedding(x) * math.sqrt(self.d_model)

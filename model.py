@@ -4,7 +4,7 @@ import torch.nn as nn
 import math
 
 class InputEmbedding():
-
+    # Here Sentence is mapped to some numbers
     def __init__(self,d_model: int, vocab_size: int):
         super.__init__()
         self.d_model = d_model

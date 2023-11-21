@@ -27,7 +27,7 @@ class PositionalEncoding(nn.Module):
         super().__init__()
         self.d_model = d_model
         self.seq_len = seq_len
-        self.dropout = dropout
+        self.dropout = nn.Dropout(dropout)
         # create a matrix of postions 
         pos_enc = torch.zeros(seq_len,d_model)
         # create a vector of 1 seq length
@@ -40,6 +40,29 @@ class PositionalEncoding(nn.Module):
         pos_enc = pos_enc.unsqueeze(0)
 
         self.register_buffer('pos_enc',pos_enc)
+
+    def forward(self,x):
+        x = x + (self.pos_enc[:,:x.shape[1],:]).requires_grad_(False)
+        return self.dropout(x)
+
+
+class LayerNormalization(nn.Module):
+    # Layer *
+    def __init__(self, eps: float =10**-6, ) -> None:
+        super().__init__()
+        # Epsilon is used beacuse if mean is close to zero then our output will be higher 
+        # and not maintable 
+        self.eps = eps
+        self.alpha = nn.Parameter(torch.ones(1)) # Multiplied
+        self.bias = nn.Parameter(torch.zeros(1)) #Added
+
+    def forward(self,x):
+        # layer norm would be Xi = Xi - mean/squareroot of std+ eps
+        mean = x.mean(dim = -1, keepdim=True)
+        std = x.std(dim = -1, keepdim=True)
+        return self.alpha * (x-mean)/(std+self.eps)+self.bias
+    
+
 
 
 
